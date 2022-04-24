@@ -4,11 +4,14 @@ using TargetProductsApi.Products.UpdateProductPrice;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+// Would eventually want to get this from environment variables.
+string redSkyUrl = builder.Configuration.GetValue<string>("RedSkyConnection:Url");
+string redSkyKey = builder.Configuration.GetValue<string>("RedSkyConnection:Key");
+
 // Set up dependency injection.
 builder.Services.AddSingleton<IProductItemStorageClient>(
-    new RedSkyProductItemStorageClient(
-        "https://redsky-uat.perf.target.com/redsky_aggregations/v1/redsky/case_study_v1",
-        "3yUxt7WltYG7MFKPp7uyELi1K40ad2ys"));
+    new RedSkyProductItemStorageClient(redSkyUrl, redSkyKey));
+
 builder.Services.AddSingleton<IProductRepository, ProductRepository>();
 builder.Services.AddSingleton<IGetProductAction, GetProductAction>();
 builder.Services.AddSingleton<IUpdateProductPriceAction, UpdateProductPriceAction>();
