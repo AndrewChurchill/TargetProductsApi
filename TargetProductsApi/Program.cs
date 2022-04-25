@@ -1,20 +1,19 @@
 using MongoDB.Driver;
 using TargetProductsApi;
+using TargetProductsApi.Common.Configuration;
 using TargetProductsApi.Products;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Would eventually want to get this from environment variables.
-string redSkyUrl = builder.Configuration.GetValue<string>("RedSkyConnection:Url");
-string redSkyKey = builder.Configuration.GetValue<string>("RedSkyConnection:Key");
-string mongoConnectionString = builder.Configuration.GetValue<string>("DatabaseConnection:ConnectionString");
+Configuration config = ConfigurationResolver.Resolve(builder.Configuration);
 
 // Set up dependency injection.
 builder.Services.AddSingleton<IProductItemStorageClient>(
-    new RedSkyProductItemStorageClient(redSkyUrl, redSkyKey));
+    new RedSkyProductItemStorageClient(config.RedSkyUrl, config.RedSkyKey));
 
 builder.Services.AddSingleton<IProductPriceStorageClient>(
-    new MongoProductPriceStorageClient(new MongoClient(mongoConnectionString)));
+    new MongoProductPriceStorageClient(new MongoClient(config.MongoConnection)));
 
 builder.Services.AddSingleton<IProductRepository, ProductRepository>();
 
