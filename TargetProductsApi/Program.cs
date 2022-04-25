@@ -4,8 +4,6 @@ using TargetProductsApi.Common.Configuration;
 using TargetProductsApi.Products;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-// Would eventually want to get this from environment variables.
 Configuration config = ConfigurationResolver.Resolve(builder.Configuration);
 
 // Set up dependency injection.
