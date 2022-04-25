@@ -21,8 +21,6 @@ curl -X 'PUT' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "id": 0,
-  "name": "string",
   "currentPrice": {
     "value": 5.44,
     "currencyCode": "USD"
