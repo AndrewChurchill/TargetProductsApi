@@ -30,7 +30,7 @@ curl -X 'PUT' \
 
 ## What's next?
 
-Since this application is meant to be a proof of concept, there are definitely things that would need to be added before this reached production.
+Since this application is meant to be a proof of concept, there are things that would need to be added before this reached production.
 Most notably:
 * Implement some sort of authorization/authentication before allowing requests (especially for writing).
 * Add more logging (i.e., any logging) and connect it to a service like Splunk for easy viewing.
@@ -39,6 +39,7 @@ Most notably:
 * Update the Open API Specification to reflect all of the status codes that can be returned and which values can be modified in a PUT request.
 * Add more data to the Products object (if needed).
 * Introduce better networking between the API and MongoDB (right now they use the default bridge when running locally).
+* Add unit, unit integration, system integration, and end to end tests.
 
 ## Running Locally
 
