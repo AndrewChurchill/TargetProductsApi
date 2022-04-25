@@ -18,7 +18,12 @@ public static class UpdateProductPriceValidator
 
         if (product.CurrentPrice is null)
         {
-            throw new InvalidOperationException("Current price is required.");
+            throw new InvalidOperationException("CurrentPrice is required.");
+        }
+
+        if (product.CurrentPrice.Value < 0)
+        {
+            throw new InvalidOperationException("CurrentPrice Value must not be less than zero.");
         }
 
         if (string.IsNullOrEmpty(product.CurrentPrice.CurrencyCode))
