@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TargetProductsApi.Common.Products;
-using TargetProductsApi.Products.GetProduct;
-using TargetProductsApi.Products.UpdateProductPrice;
+using TargetProductsApi.Products;
 using TargetProductsApi.Validators.Products;
 
 namespace TargetProductsApi.Controllers;
@@ -10,18 +9,13 @@ namespace TargetProductsApi.Controllers;
 [Route("/products")]
 public class ProductsController : ControllerBase
 {
-    private readonly IGetProductAction _getProductAction;
-    private readonly IUpdateProductPriceAction _updateProductPriceAction;
+    private readonly IProductRepository _productRepository;
 
     public ProductsController(
-        IGetProductAction getProductAction,
-        IUpdateProductPriceAction updateProductPriceAction)
+        IProductRepository productRepository)
     {
-        _getProductAction = getProductAction ??
-            throw new ArgumentNullException(nameof(getProductAction));
-
-        _updateProductPriceAction = updateProductPriceAction ??
-            throw new ArgumentNullException(nameof(updateProductPriceAction));
+        _productRepository = productRepository ??
+            throw new ArgumentNullException(nameof(productRepository));
     }
 
     [HttpGet("{id}")]
@@ -36,8 +30,8 @@ public class ProductsController : ControllerBase
             return BadRequest(ex.Message);
         }
 
-        Product product = await _getProductAction.GetProduct(id);
-        return await Task.FromResult(Ok(product));
+        Product product = await _productRepository.GetProduct(id);
+        return Ok(product);
     }
 
     [HttpPut("{id}")]
@@ -53,7 +47,7 @@ public class ProductsController : ControllerBase
         }
 
         // Only support updating product price for now.
-        await _updateProductPriceAction.UpdateProductPrice(id, product.CurrentPrice);
-        return await Task.FromResult(Ok());
+        Product updated = await _productRepository.UpdateProductPrice(id, product.CurrentPrice);
+        return Ok(updated);
     }
 }

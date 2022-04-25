@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
+﻿using System.Net;
+using Microsoft.AspNetCore.WebUtilities;
 using TargetProductsApi.Common.Products;
+using TargetProductsApi.Exceptions;
 
 namespace TargetProductsApi.Products;
 
@@ -11,12 +13,8 @@ public class RedSkyProductItemStorageClient : IProductItemStorageClient
 
     public RedSkyProductItemStorageClient(string url, string key)
     {
-        _url = url ??
-            throw new ArgumentNullException(nameof(url));
-
-        _key = key ??
-            throw new ArgumentNullException(nameof(key));
-
+        _url = url ?? throw new ArgumentNullException(nameof(url));
+        _key = key ?? throw new ArgumentNullException(nameof(key));
         _client = new HttpClient();
     }
 
@@ -29,6 +27,12 @@ public class RedSkyProductItemStorageClient : IProductItemStorageClient
         });
 
         HttpResponseMessage response = await _client.GetAsync(urlWithParams);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new ResourceNotFoundException();
+        }
+
         response.EnsureSuccessStatusCode();
 
         string productItem = await response.Content.ReadAsStringAsync();

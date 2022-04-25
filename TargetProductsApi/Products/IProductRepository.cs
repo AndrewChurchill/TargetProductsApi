@@ -6,5 +6,5 @@ public interface IProductRepository
 {
     Task<Product> GetProduct(int id);
 
-    Task UpdateProductPrice(int id, ProductPrice productPrice);
+    Task<Product> UpdateProductPrice(int id, ProductPrice productPrice);
 }

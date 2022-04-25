@@ -1,23 +1,42 @@
 ﻿using TargetProductsApi.Common.Products;
+using TargetProductsApi.Exceptions;
 
 namespace TargetProductsApi.Products;
 
 public class ProductRepository : IProductRepository
 {
     private readonly IProductItemStorageClient _productItemStorageClient;
+    private readonly IProductPriceStorageClient _productPriceStorageClient;
 
-    public ProductRepository(IProductItemStorageClient productItemStorageClient)
+    public ProductRepository(
+        IProductItemStorageClient productItemStorageClient,
+        IProductPriceStorageClient productPriceStorageClient)
     {
-        _productItemStorageClient = productItemStorageClient;
+        _productItemStorageClient = productItemStorageClient
+            ?? throw new ArgumentNullException(nameof(productItemStorageClient));
+
+        _productPriceStorageClient = productPriceStorageClient
+            ?? throw new ArgumentNullException(nameof(productPriceStorageClient));
     }
 
-    public Task<Product> GetProduct(int id)
+    public async Task<Product> GetProduct(int id)
     {
-        return _productItemStorageClient.GetProduct(id);
+        Product product = await _productItemStorageClient.GetProduct(id);
+        if (product is null)
+        {
+            throw new ResourceNotFoundException();
+        }
+
+        // Price can be null if it hasn't been set yet.
+        ProductPrice price = await _productPriceStorageClient.GetProductPrice(id);
+        product.CurrentPrice = price;
+
+        return product;
     }
 
-    public Task UpdateProductPrice(int id, ProductPrice productPrice)
+    public async Task<Product> UpdateProductPrice(int id, ProductPrice productPrice)
     {
-        throw new NotImplementedException();
+        await _productPriceStorageClient.UpdateProductPrice(id, productPrice);
+        return await GetProduct(id);
     }
 }

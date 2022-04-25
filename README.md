@@ -14,6 +14,12 @@ After you have verified that Docker is installed, run the following command from
 docker build -t target_products_api .
 ```
 
+To run MongoDB locally in Docker, run:
+
+```
+docker run --name mongodb -d -p 27017:27017 mongo
+```
+
 ### Running the Docker image locally
 
 After you have built the Docker image, you can run it with the following:
