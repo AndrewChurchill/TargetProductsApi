@@ -12,7 +12,7 @@ public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        if (context.Exception is ResourceNotFoundException)
+        if (context.Exception is TargetResourceNotFoundException)
         {
             context.Result = new ObjectResult("Not found.")
             {

@@ -30,7 +30,7 @@ public class RedSkyProductItemStorageClient : IProductItemStorageClient
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
-            throw new ResourceNotFoundException();
+            throw new TargetResourceNotFoundException();
         }
 
         response.EnsureSuccessStatusCode();

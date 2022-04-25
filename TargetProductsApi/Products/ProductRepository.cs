@@ -24,7 +24,7 @@ public class ProductRepository : IProductRepository
         Product product = await _productItemStorageClient.GetProduct(id);
         if (product is null)
         {
-            throw new ResourceNotFoundException();
+            throw new TargetResourceNotFoundException();
         }
 
         // Price can be null if it hasn't been set yet.
@@ -36,6 +36,13 @@ public class ProductRepository : IProductRepository
 
     public async Task<Product> UpdateProductPrice(int id, ProductPrice productPrice)
     {
+        // Only want to update if the product exists
+        Product existingProduct = await _productItemStorageClient.GetProduct(id);
+        if (existingProduct is null)
+        {
+            throw new TargetResourceNotFoundException();
+        }
+
         await _productPriceStorageClient.UpdateProductPrice(id, productPrice);
         return await GetProduct(id);
     }
